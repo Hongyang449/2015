@@ -30,10 +30,10 @@ membership_ras_146[c(5:9,18:26,29:30,38:46,50:56)] <- 1
 membership_ras_146[10:17] <- 2
 membership_ras_146[c(31:37)] <- 3
 membership_ras_146[c(57:75)] <- 4
-membership_ras_146[c(76:85,110:121,140:153)] <- 5
+membership_ras_146[c(76:85,110:121,140:148)] <- 5
 membership_ras_146[c(86:103,108:109)] <- 6
 membership_ras_146[c(126:139)] <- 7
-membership_ras_146[c(154:163)] <- 8
+membership_ras_146[c(149:163)] <- 8
 inds <- which(membership_ras_146 != 0)
 membership_146 <- membership_ras_146[membership_ras_146!=0]
 for (i in 1:length(membership_146)) {
@@ -47,11 +47,11 @@ membership_gt[c(54:72,148:172)] <- 10
 membership_gt[c(73:107,110:147)] <- 11
 membership_gt[173:179] <- 3
 membership_gt[196:214] <- 4
-membership_gt[c(215:226,259:274,316:329)] <- 5
+membership_gt[c(215:226,259:274,316:324)] <- 5
 membership_gt[227:258] <- 6
 membership_gt[275:299] <- 9
 membership_gt[c(300:307,309:312,314:315)] <- 7
-membership_gt[330:339] <- 8
+membership_gt[325:339] <- 8
 ali["membership_gt",which(ali["resno_gt",]!="0")[5:313]] <- membership_gt[31:339]
 
 membership_ras <- rep(0,166)
@@ -59,11 +59,11 @@ membership_ras[c(1:9,18:24,38:56)] <- 1
 membership_ras[10:17] <- 2
 membership_ras[25:37] <- 3
 membership_ras[57:75] <- 4
-membership_ras[c(76:85,110:121,140:153)] <- 5
+membership_ras[c(76:85,110:121,140:148)] <- 5
 membership_ras[86:109] <- 6
 membership_ras[122:130] <- 9
 membership_ras[131:139] <- 7
-membership_ras[154:166] <- 8
+membership_ras[149:166] <- 8
 ali["membership_ras",ali["resno_ras",]!="0"] <- membership_ras
 
 save(ali,
