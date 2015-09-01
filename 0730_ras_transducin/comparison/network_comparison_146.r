@@ -80,8 +80,8 @@ membership_146 <- as.numeric(ali["membership_146",ali["membership_146",]!="0"])
 name_ras <- c("b1-b3,a1","p-loop","SI","SII","b4-b6","a3","a4","a5")
 names(name_ras) <- 1:length(name_ras)
 
-nets_ras_146_remodel <- remodel.cna(nets_ras_146, member = membership_146, method="sum", col.edge="feature", scut=4)
-nets_gt_146_remodel <- remodel.cna(nets_gt_146, member = membership_146, method="sum", col.edge="feature", scut=4)
+nets_ras_146_remodel <- remodel.cna(nets_ras_146, col=1:8, member = membership_146, method="sum", col.edge="feature", scut=4)
+nets_gt_146_remodel <- remodel.cna(nets_gt_146, col=1:8, member = membership_146, method="sum", col.edge="feature", scut=4)
 
 w1_ras = exp(-E(nets_ras_146_remodel[[1]]$community.network)$weight)*20
 w2_ras = exp(-E(nets_ras_146_remodel[[2]]$community.network)$weight)*20
