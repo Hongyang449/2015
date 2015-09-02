@@ -49,6 +49,56 @@ cna_gtp <- cna(cij_gtp[1:166,1:166], cutoff.cij=0)
 cna_gdp <- cna(cij_gdp[1:166,1:166], cutoff.cij=0)
 nets_dummy <- list(gtp=cna_gtp,gdp=cna_gdp)
 
+nets_nma_ras_pearson_remodel <- NULL
+layout(matrix(1:14,nrow=2))
+for (j in seq(0.0,0.6,by=0.1)) {
+
+  #### pearson !
+
+  # calculate consensu cij
+  cij_gtp <- filter.dccm(array_cij_ca_pearson_gtp, 
+    cmap=cmap_ca_gtp_dist10[1:166,1:166], cutoff.cij=j)
+  cij_gdp <- filter.dccm(array_cij_ca_pearson_gdp, 
+    cmap=cmap_ca_gdp_dist10[1:166,1:166], cutoff.cij=j)
+  
+  # abs!
+  cij_gtp <- abs(cij_gtp)
+  cij_gdp <- abs(cij_gdp)
+  
+  # minus.log cij
+  cij_gtp[cij_gtp>=1] <- 0.9999
+  cij_gtp[cij_gtp>0] <- -log(cij_gtp[cij_gtp>0])
+  cij_gdp[cij_gdp>=1] <- 0.9999
+  cij_gdp[cij_gdp>0] <- -log(cij_gdp[cij_gdp>0])
+
+  # change the cij of dummy networks
+  nets_pearson <- nets_dummy
+  nets_pearson$gtp$cij <- cij_gtp
+  nets_pearson$gdp$cij <- cij_gdp
+
+  # remodel networks
+  nets_nma_pearson_remodel <- remodel.cna(nets_pearson, member=membership_ras, method="sum", 
+    col.edge="feature", scut=4, normalize=FALSE)
+
+  # calculate weights
+  w1_pearson = (E(nets_nma_pearson_remodel[[1]]$community.network)$weight)*1
+  w2_pearson = (E(nets_nma_pearson_remodel[[2]]$community.network)$weight)*1
+
+  # plot!
+  plot.cna(nets_nma_pearson_remodel[[1]], layout=layout_2d[1:9,], weights = w1_pearson,
+    vertex.label=NA, main=paste0("gtp_cutoff.cij=",j))
+  plot.cna(nets_nma_pearson_remodel[[2]], layout=layout_2d[1:9,], weights = w2_pearson,
+    vertex.label=NA, main=paste0("gdp_cutoff.cij=",j))
+
+  # list and save networks
+  nets_nma_ras_pearson_remodel <- c(nets_nma_ras_pearson_remodel, 
+    list(nets_nma_ras_pearson_remodel))
+}
+mtext("Ras_NMA_networks(pearson)", line=-50, outer=TRUE, cex=1.5)
+dev.copy2pdf(file="figures/cna_nma_ras_pearson.pdf")
+
+names(nets_nma_ras_pearson_remodel) <- seq(0.0,0.6,by=0.1)
+
 save(pdbs, pdbs_gtp, pdbs_gdp,
      modes, modes_gtp, modes_gdp,
      cij_nma_pearson_gtp, cij_nma_pearson_gdp,
