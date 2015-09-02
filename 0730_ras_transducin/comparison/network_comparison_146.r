@@ -6,7 +6,7 @@
 
 
 load("/Users/hyangl/Desktop/0730_ras_transducin/transducin/gt_networks.RData")
-load("/Users/hyangl/Desktop/0105_manuscript/dccm/cij_consensus_2grps.RData")
+load("/Users/hyangl/Desktop/2015/0105_manuscript/dccm/cij_consensus.RData")
 
 load("/Users/hyangl/Desktop/0730_ras_transducin/comparison/ali.RData")
 load("/Users/hyangl/Desktop/0730_ras_transducin/comparison/layout_2d.RData")
@@ -29,8 +29,8 @@ cij_ras_gdp_146 <- matrix(-1,nrow=169,ncol=169)
 cij_gt_gtp_146 <- matrix(-1,nrow=169,ncol=169)
 cij_gt_gdp_146 <- matrix(-1,nrow=169,ncol=169)
 
-cij_ras_gtp_146[inds1,inds1] <- lmi_consensus_gtp[inds1,inds1]
-cij_ras_gdp_146[inds1,inds1] <- lmi_consensus_gdp[inds1,inds1]
+cij_ras_gtp_146[inds1,inds1] <- cij_ca_pearson_gtp_consensus[inds1,inds1]
+cij_ras_gdp_146[inds1,inds1] <- cij_ca_pearson_gdp_consensus[inds1,inds1]
 
 cij <- nets_gt_3grps$gtp$cij[inds2,inds2]
 cij[cij>0] = exp(-cij[cij>0])
@@ -50,19 +50,19 @@ x11(type="cairo")
 plot.new()
 plot.dccm(cij_ras_gtp_vs_gdp_146,helix.col="gray20",sheet.col="gray80",
           scales=list(x=list(at=label_ab, cex=0.8, rot=90), y=list(at=label_ab, cex=0.8)),
-          main="Ras",sse=sse)
+          main="Ras_pearson_correlation",sse=sse)
 draw.box(sse)
 label_ras(c("GTP","GDP"))
-savePlot(filename="figures/cij_ras_gtp_vs_gdp_146.png", type="png")
+savePlot(filename="figures/cij_pearson_ras_gxp_146.png", type="png")
 
 x11(type="cairo")
 plot.new()
 plot.dccm(cij_gt_gtp_vs_gdp_146,helix.col="gray20",sheet.col="gray80",
           scales=list(x=list(at=label_ab, cex=0.8, rot=90), y=list(at=label_ab, cex=0.8)),
-          main="Transducin",sse=sse)
+          main="Transducin_pearson_correlation",sse=sse)
 draw.box(sse)
 label_ras(c("GTP","GDP"))
-savePlot(filename="figures/cij_gt_gtp_vs_gdp_146.png", type="png")
+savePlot(filename="figures/cij_pearson_gt_gxp_146.png", type="png")
 
 # cna
 cna_ras_gtp_146 <- cna(cij_ras_gtp_146[inds1,inds1], cutoff.cij=0)
@@ -80,13 +80,13 @@ membership_146 <- as.numeric(ali["membership_146",ali["membership_146",]!="0"])
 name_ras <- c("b1-b3,a1","p-loop","SI","SII","b4-b6","a3","a4","a5")
 names(name_ras) <- 1:length(name_ras)
 
-nets_ras_146_remodel <- remodel.cna(nets_ras_146, col=1:8, member = membership_146, method="sum", col.edge="feature", scut=4)
-nets_gt_146_remodel <- remodel.cna(nets_gt_146, col=1:8, member = membership_146, method="sum", col.edge="feature", scut=4)
+nets_ras_146_remodel <- remodel.cna(nets_ras_146, member = membership_146, method="sum", col.edge="feature", scut=4, normalize=FALSE)
+nets_gt_146_remodel <- remodel.cna(nets_gt_146, member = membership_146, method="sum", col.edge="feature", scut=4, normalize=FALSE)
 
-w1_ras = exp(-E(nets_ras_146_remodel[[1]]$community.network)$weight)*20
-w2_ras = exp(-E(nets_ras_146_remodel[[2]]$community.network)$weight)*20
-w1_gt = exp(-E(nets_gt_146_remodel[[1]]$community.network)$weight)*20
-w2_gt = exp(-E(nets_gt_146_remodel[[2]]$community.network)$weight)*20
+w1_ras = (E(nets_ras_146_remodel[[1]]$community.network)$weight)*1
+w2_ras = (E(nets_ras_146_remodel[[2]]$community.network)$weight)*1
+w1_gt = (E(nets_gt_146_remodel[[1]]$community.network)$weight)*1
+w2_gt = (E(nets_gt_146_remodel[[2]]$community.network)$weight)*1
 
 par(mfrow=c(1,2), mar = c(6,6,12,6), pty="s")
 plot.cna(nets_ras_146_remodel[[1]], layout=layout_2d[1:8,], weights = w1_ras, vertex.label=NA, main="ras_gtp_146")
@@ -117,6 +117,7 @@ dev.copy2pdf(file="figures/2D_cna_transducin_146.pdf")
 save(inds1, inds2, 
      cij_ras_gtp_146, cij_ras_gdp_146,
      cij_gt_gtp_146, cij_gt_gdp_146,
+     nets_ras_146, nets_gt_146,
      nets_ras_146_remodel, nets_gt_146_remodel,
      ali, membership_146, layout_2d,
      file="network_comparison_146.RData")

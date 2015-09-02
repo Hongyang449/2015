@@ -7,7 +7,7 @@
 library(bio3d)
 
 load("/Users/hyangl/Desktop/0730_ras_transducin/transducin/gt_networks.RData")
-load("/Users/hyangl/Desktop/0105_manuscript/dccm/cij_consensus_2grps.RData")
+load("/Users/hyangl/Desktop/2015/0105_manuscript/dccm/cij_consensus.RData")
 
 load("/Users/hyangl/Desktop/0730_ras_transducin/comparison/ali.RData")
 load("/Users/hyangl/Desktop/0730_ras_transducin/comparison/layout_2d.RData")
@@ -20,8 +20,8 @@ source("/Users/hyangl/Desktop/2015/functions/remodel.cna2.R")
 pdb_ras <- read.pdb("/Users/hyangl/Desktop/0105_manuscript/dccm/pdb/gtp_plot.pdb")
 
 # cna; 1:166
-cna_ras_gtp <- cna(lmi_consensus_gtp[1:166,1:166], cutoff.cij=0)
-cna_ras_gdp <- cna(lmi_consensus_gdp[1:166,1:166], cutoff.cij=0)
+cna_ras_gtp <- cna(cij_ca_pearson_gtp_consensus[1:166,1:166], cutoff.cij=0)
+cna_ras_gdp <- cna(cij_ca_pearson_gdp_consensus[1:166,1:166], cutoff.cij=0)
 
 nets_ras <- list(gtp=cna_ras_gtp,gdp=cna_ras_gdp)
 nets_gt <- nets_gt_3grps[1:2]
@@ -34,14 +34,14 @@ membership_gt <- as.numeric(ali["membership_gt",ali["membership_gt",]!="0"])
 name_gt <- c("b1-b3,a1","p-loop","SI","SII","b4-b6", "SIII,a3","a4","a5","loop8","H1","H2")
 names(name_gt) <- 1:length(name_gt)
 
-nets_ras_remodel <- remodel.cna(nets_ras, col=1:9, member=membership_ras, method="sum", col.edge=
-"feature", scut=4)
-nets_gt_remodel <- remodel.cna(nets_gt, col=1:11, member=membership_gt, method="sum", col.edge="feature", scut=4)
+nets_ras_remodel <- remodel.cna(nets_ras, member=membership_ras, method="sum", col.edge=
+"feature", scut=4, normalize=FALSE)
+nets_gt_remodel <- remodel.cna(nets_gt, member=membership_gt, method="sum", col.edge="feature", scut=4, normalize=FALSE)
 
-w1_ras = exp(-E(nets_ras_remodel[[1]]$community.network)$weight)*20
-w2_ras = exp(-E(nets_ras_remodel[[2]]$community.network)$weight)*20
-w1_gt = exp(-E(nets_gt_remodel[[1]]$community.network)$weight)*20
-w2_gt = exp(-E(nets_gt_remodel[[2]]$community.network)$weight)*20
+w1_ras = (E(nets_ras_remodel[[1]]$community.network)$weight)*1
+w2_ras = (E(nets_ras_remodel[[2]]$community.network)$weight)*1
+w1_gt = (E(nets_gt_remodel[[1]]$community.network)$weight)*1
+w2_gt = (E(nets_gt_remodel[[2]]$community.network)$weight)*1
 
 
 par(mfrow=c(1,2), mar = c(6,6,12,6), pty="s")
@@ -70,7 +70,8 @@ for (i in 1:length(name_gt)) {
 }
 dev.copy2pdf(file="figures/2D_cna_transducin.pdf")
 
-save(nets_ras_remodel, nets_gt_remodel,
+save(nets_ras, nets_gt,
+     nets_ras_remodel, nets_gt_remodel,
      membership_ras, membership_gt,
      name_ras, name_gt,
      layout_2d,
