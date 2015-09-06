@@ -16,5 +16,12 @@ layout_2d[9,] <- c(29.588111, 92.51467)
 layout_2d[10,] <- c(-21.961059, 81.52253)
 layout_2d[11,] <- c(-21.961059, 91.52253)
 
+# modify it for ras
+
+layout_2d[3,] <- layout_2d[3,] + c(3,0)
+layout_2d[4,] <- layout_2d[4,] + c(0,2)
+layout_2d[7,] <- layout_2d[7,] + c(2,-1)
+layout_2d[9,] <- layout_2d[9,] + c(0,-3)
+
 save(layout_2d, file="layout_2d.RData")
 
