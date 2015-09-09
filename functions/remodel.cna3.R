@@ -87,7 +87,7 @@ normalize.cij <- function(cij, ...) {
 remodel.cna <- function(x, member = NULL, col = NULL, minus.log = TRUE,
        method = c('none', 'sum', 'mean', 'max'), ne=3, scut=4, normalize = TRUE, 
        vmd.color = TRUE, col.edge=c('none', 'variance', 'feature', 'significance'),
-       colmap.edge = NULL,  coledge.cutoff = 0.5, signif=NULL, ...) {
+       colmap.edge = NULL,  coledge.cutoff = 0.5, signif=NULL, p.cutoff=0.05, ...) {
 
    require(igraph)
    method <- match.arg(method)
@@ -213,7 +213,7 @@ remodel.cna <- function(x, member = NULL, col = NULL, minus.log = TRUE,
             # Calculate the variance of CG cijs across networks.
             # The values will be used to color the edges of CG networks
             edge.color <- get.edgecolor(cij = cg.cij, method = col.edge,
-                   colmap = colmap.edge, cutoff = coledge.cutoff, signif=signif, ...)
+                   colmap = colmap.edge, cutoff = coledge.cutoff, signif=signif, p.cutoff=p.cutoff, ...)
          }
       }
    }
@@ -262,7 +262,7 @@ remodel.cna <- function(x, member = NULL, col = NULL, minus.log = TRUE,
       y$communities$membership <- member[[i]]
       y$community.cij <- cij
       inds = which(abs(y$cij[key[[i]]]) > 0 & abs(apply(key[[i]], 1, diff)) >= scut)
-      y$community.key.cij <- cbind(key[[i]][inds, ], member[[i]][key[[i]][inds,1]],
+      y$community.key.cij <- cbind(key[[i]][inds, ,drop=FALSE], member[[i]][key[[i]][inds,1]],
                                                      member[[i]][key[[i]][inds,2]])
 
       y$network <- set.vertex.attribute(y$network, "color", value= col[[i]][member[[i]]])

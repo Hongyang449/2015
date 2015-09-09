@@ -1,8 +1,8 @@
 ## date: 09/06/2015
 
-plot.nets <- function(cij, cmap, cutoff.cij, nets_dummy, membership, signif, layout_2d) {
+plot.nets <- function(cij, cmap, cutoff.cij, nets_dummy, membership, signif, layout_2d, p.cutoff) {
 
-  # calculate consensu cij
+  # calculate consensus cij
   cij1 <- filter.dccm(cij[[1]], cmap=cmap[[1]], cutoff.cij=cutoff.cij)
   cij2 <- filter.dccm(cij[[2]], cmap=cmap[[2]], cutoff.cij=cutoff.cij)
 
@@ -23,7 +23,7 @@ plot.nets <- function(cij, cmap, cutoff.cij, nets_dummy, membership, signif, lay
 
   # remodel networks
   nets_remodel <- remodel.cna(nets, member=membership, method="sum",
-    col.edge="significance", scut=4, normalize=FALSE, signif=signif)
+    col.edge="significance", scut=4, normalize=FALSE, signif=signif, p.cutoff=p.cutoff)
 
   # calculate weights
   w1 <- (E(nets_remodel[[1]]$community.network)$weight)*1
@@ -31,9 +31,9 @@ plot.nets <- function(cij, cmap, cutoff.cij, nets_dummy, membership, signif, lay
 
   # plot!
   plot.cna(nets_remodel[[1]], layout=layout_2d, weights = w1,
-    vertex.label=NA, main=paste0("gtp_cutoff.cij=",cutoff.cij))
+    vertex.label=NA, main=paste0(names(cij)[1],"_cutoff.cij=",cutoff.cij))
   plot.cna(nets_remodel[[2]], layout=layout_2d, weights = w2,
-    vertex.label=NA, main=paste0("gdp_cutoff.cij=",cutoff.cij))
+    vertex.label=NA, main=paste0(names(cij)[2],"_cutoff.cij=",cutoff.cij))
 
   return(nets_remodel)
 }
