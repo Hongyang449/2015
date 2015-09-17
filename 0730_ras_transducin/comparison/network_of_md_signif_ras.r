@@ -11,7 +11,12 @@ load("/Users/hyangl/Desktop/2015/0105_manuscript/dccm/cmap.RData")
 source("/Users/hyangl/Desktop/2015/functions/remodel.cna3.R")
 source("/Users/hyangl/Desktop/2015/functions/get.signif.R")
 source("/Users/hyangl/Desktop/2015/functions/get.community.cij.R")
+source("/Users/hyangl/Desktop/2015/functions/remodel.nets.R")
 source("/Users/hyangl/Desktop/2015/functions/plot.nets.R")
+
+p.cutoff <- 0.05
+cutoff <- seq(0.0,0.7,by=0.05)
+layout_2d <- layout_2d[1:9,]
 
 membership_ras <- as.numeric(ali["membership_ras",ali["membership_ras",]!="0"])
 
@@ -22,112 +27,76 @@ cna_gtp <- cna(cij_gtp[1:166,1:166], cutoff.cij=0)
 cna_gdp <- cna(cij_gdp[1:166,1:166], cutoff.cij=0)
 nets_dummy <- list(gtp=cna_gtp,gdp=cna_gdp)
 
-######### pearson #########
+cij_pearson <- list(gtp=array_cij_ca_pearson_gtp[1:166,1:166,],gdp=array_cij_ca_pearson_gdp[1:166,1:166,])
+cij_lmi <- list(gtp=array_cij_ca_lmi_gtp[1:166,1:166,],gdp=array_cij_ca_lmi_gdp[1:166,1:166,])
+cmap <- list(gtp=cmap_ca_gtp_dist10[1:166,1:166],gdp=cmap_ca_gdp_dist10[1:166,1:166])
 
-cij_pearson <- list(array_cij_ca_pearson_gtp[1:166,1:166,],array_cij_ca_pearson_gdp[1:166,1:166,])
-cmap <- list(cmap_ca_gtp_dist10[1:166,1:166],cmap_ca_gdp_dist10[1:166,1:166])
-
-# community_cij: list 0.0-0.7 -> list gtp/gdp -> array 9*9*10
-community_cij_md_ras_pearson <- 
-  lapply(as.list(seq(0.0,0.7,by=0.1)), function(x) {
-    get.community.cij(cij=cij_pearson, cmap=cmap, cutoff.cij=x, membership=membership_ras)
-    })
-
-# p_community_cij: list 0.0-0.7 -> matrix p.value
-p_community_cij_md_ras_pearson <- 
-  lapply(community_cij_md_ras_pearson, function(x) {
-    get.signif(x[[1]],x[[2]])
-    })
-
-# plot and save remodel nets
-nets_md_ras_pearson_remodel <- NULL
-i = 1
-layout(matrix(1:8,nrow=2))
-for (j in seq(0.0,0.3,by=0.1)) {
-  # calculate and plot networks
-  nets_remodel <- plot.nets(cij=cij_pearson, cmap=cmap, cutoff.cij=j, 
-    nets_dummy=nets_dummy, membership=membership_ras, 
-    signif=p_community_cij_md_ras_pearson[[i]], layout_2d=layout_2d[1:9,])
-
-  # list and save networks
-  nets_md_ras_pearson_remodel <- c(nets_md_ras_pearson_remodel,
-    list(nets_remodel))
-
-  i <- i+1
-}
-mtext("Ras_MD_networks(pearson;signif)", line=-50, outer=TRUE, cex=1.5)
-dev.copy2pdf(file="figures/cna_md_ras_pearson_signif_0.0_0.3.pdf")
-
-layout(matrix(1:8,nrow=2))
-for (j in seq(0.4,0.7,by=0.1)) {
-  # calculate and plot networks
-  nets_remodel <- plot.nets(cij=cij_pearson, cmap=cmap, cutoff.cij=j, 
-    nets_dummy=nets_dummy, membership=membership_ras, 
-    signif=p_community_cij_md_ras_pearson[[i]], layout_2d=layout_2d[1:9,])
-
-  # list and save networks
-  nets_md_ras_pearson_remodel <- c(nets_md_ras_pearson_remodel,
-    list(nets_remodel))
-
-  i <- i+1
-}
-mtext("Ras_MD_networks(pearson;signif)", line=-50, outer=TRUE, cex=1.5)
-dev.copy2pdf(file="figures/cna_md_ras_pearson_signif_0.4_0.7.pdf")
-
-######### lmi #########
-
-cij_lmi <- list(array_cij_ca_lmi_gtp[1:166,1:166,],array_cij_ca_lmi_gdp[1:166,1:166,])
-cmap <- list(cmap_ca_gtp_dist10[1:166,1:166],cmap_ca_gdp_dist10[1:166,1:166])
+########## pearson ###########
 
 # community_cij: list 0.0-0.7 -> list gtp/gdp -> array 9*9*10
-community_cij_md_ras_lmi <-
-  lapply(as.list(seq(0.0,0.7,by=0.1)), function(x) {
-    get.community.cij(cij=cij_lmi, cmap=cmap, cutoff.cij=x, membership=membership_ras)
-    })
+community_cij_md_ras_pearson <- lapply(as.list(cutoff), function(x) {
+  get.community.cij(cij=cij_pearson, cmap=cmap, cutoff.cij=x, membership=membership_ras)
+  })
+names(community_cij_md_ras_pearson) <- cutoff
 
 # p_community_cij: list 0.0-0.7 -> matrix p.value
-p_community_cij_md_ras_lmi <-
-  lapply(community_cij_md_ras_lmi, function(x) {
-    get.signif(x[[1]],x[[2]])
-    })
+p_community_cij_md_ras_pearson <- lapply(community_cij_md_ras_pearson, function(x) {
+  get.signif(x[[1]],x[[2]])
+  })
+names(p_community_cij_md_ras_pearson) <- cutoff
 
-# plot and save remodel nets
-nets_md_ras_lmi_remodel <- NULL
-i = 1
-layout(matrix(1:8,nrow=2))
-for (j in seq(0.0,0.3,by=0.1)) {
-  # calculate and plot networks
-  nets_remodel <- plot.nets(cij=cij_lmi, cmap=cmap, cutoff.cij=j,
-    nets_dummy=nets_dummy, membership=membership_ras,
-    signif=p_community_cij_md_ras_lmi[[i]], layout_2d=layout_2d[1:9,])
+# remodel nets
+nets_md_ras_pearson_remodel <- lapply(as.list(1:length(cutoff)), function(x) {
+  remodel.nets(cij=cij_pearson, cmap=cmap, cutoff.cij=cutoff[x], nets_dummy=nets_dummy,
+    membership=membership_ras, signif=p_community_cij_md_ras_pearson[[x]],
+    layout_2d=layout_2d, p.cutoff=p.cutoff)
+  })
+names(nets_md_ras_pearson_remodel) <- cutoff
 
-  # list and save networks
-  nets_md_ras_lmi_remodel <- c(nets_md_ras_lmi_remodel,
-    list(nets_remodel))
+########## lmi ###########
 
-  i <- i+1
-}
-mtext("Ras_MD_networks(lmi;signif)", line=-50, outer=TRUE, cex=1.5)
-dev.copy2pdf(file="figures/cna_md_ras_lmi_signif_0.0_0.3.pdf")
+# community_cij: list 0.0-0.7 -> list gtp/gdp -> array 9*9*10
+community_cij_md_ras_lmi <- lapply(as.list(cutoff), function(x) {
+  get.community.cij(cij=cij_lmi, cmap=cmap, cutoff.cij=x, membership=membership_ras)
+  })
+names(community_cij_md_ras_lmi) <- cutoff
 
-layout(matrix(1:8,nrow=2))
-for (j in seq(0.4,0.7,by=0.1)) {
-  # calculate and plot networks
-  nets_remodel <- plot.nets(cij=cij_lmi, cmap=cmap, cutoff.cij=j,
-    nets_dummy=nets_dummy, membership=membership_ras,
-    signif=p_community_cij_md_ras_lmi[[i]], layout_2d=layout_2d[1:9,])
+# p_community_cij: list 0.0-0.7 -> matrix p.value
+p_community_cij_md_ras_lmi <- lapply(community_cij_md_ras_lmi, function(x) {
+  get.signif(x[[1]],x[[2]])
+  })
+names(p_community_cij_md_ras_lmi) <- cutoff
 
-  # list and save networks
-  nets_md_ras_lmi_remodel <- c(nets_md_ras_lmi_remodel,
-    list(nets_remodel))
-
-  i <- i+1
-}
-mtext("Ras_MD_networks(lmi;signif)", line=-50, outer=TRUE, cex=1.5)
-dev.copy2pdf(file="figures/cna_md_ras_lmi_signif_0.4_0.7.pdf")
+# remodel nets
+nets_md_ras_lmi_remodel <- lapply(as.list(1:length(cutoff)), function(x) {
+  remodel.nets(cij=cij_lmi, cmap=cmap, cutoff.cij=cutoff[x], nets_dummy=nets_dummy,
+    membership=membership_ras, signif=p_community_cij_md_ras_lmi[[x]],
+    layout_2d=layout_2d, p.cutoff=p.cutoff)
+  })
+names(nets_md_ras_lmi_remodel) <- cutoff
 
 save(community_cij_md_ras_pearson, community_cij_md_ras_lmi,
      p_community_cij_md_ras_pearson, p_community_cij_md_ras_lmi,
      nets_md_ras_pearson_remodel, nets_md_ras_lmi_remodel,
      file="network_of_md_signif_ras.RData")
+
+
+# plot!
+
+plot.nets(nets_md_ras_pearson_remodel[as.character(seq(0.2,0.35,by=0.05))], layout_2d=layout_2d)
+mtext("Ras_MD_networks(pearson;signif)", line=-50, outer=TRUE, cex=1.5)
+dev.copy2pdf(file="figures/cna_md_ras_pearson_signif_0.2_0.35.pdf")
+
+plot.nets(nets_md_ras_pearson_remodel[as.character(seq(0.4,0.55,by=0.05))], layout_2d=layout_2d)
+mtext("Ras_MD_networks(pearson;signif)", line=-50, outer=TRUE, cex=1.5)
+dev.copy2pdf(file="figures/cna_md_ras_pearson_signif_0.4_0.55.pdf")
+
+plot.nets(nets_md_ras_lmi_remodel[as.character(seq(0.3,0.45,by=0.05))], layout_2d=layout_2d)
+mtext("Ras_MD_networks(lmi;signif)", line=-50, outer=TRUE, cex=1.5)
+dev.copy2pdf(file="figures/cna_md_ras_lmi_signif_0.3_0.45.pdf")
+
+plot.nets(nets_md_ras_lmi_remodel[as.character(seq(0.5,0.65,by=0.05))], layout_2d=layout_2d)
+mtext("Ras_MD_networks(lmi;signif)", line=-50, outer=TRUE, cex=1.5)
+dev.copy2pdf(file="figures/cna_md_ras_lmi_signif_0.5_0.65.pdf")
+
   

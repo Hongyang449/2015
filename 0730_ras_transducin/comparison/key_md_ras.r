@@ -3,7 +3,7 @@
 ## name: key_md_ras.r
 ## date: 09/07/2015
 
-# which(p<0.05) -> vec2mat -> list pairs
+# which(p<p.cutoff) -> vec2mat -> list pairs
 # list 0.0-0.7 -> list signif_edges -> mat key_residue_pairs
 
 library(bio3d)
@@ -12,24 +12,20 @@ load("/Users/hyangl/Desktop/2015/0730_ras_transducin/comparison/network_of_md_si
 
 source("/Users/hyangl/Desktop/2015/functions/position_vec2mat.R")
 
-############## pearson ###############
+p.cutoff <- 0.05
 
-# !! bug
-# nets_md_ras_pearson_remodel[[8]]$gdp$community.key.cij
-#      [,1] [,2] [,3]
-# [1,]   18    1    5
-# [2,]  146    1    5
+############## pearson ###############
 
 # list of key residue pairs
 key_pearson_gtp <- NULL
 key_pearson_gdp <- NULL
-for (i in 1:(length(p_community_cij_md_ras_pearson)-1)) {
+for (i in 1:length(p_community_cij_md_ras_pearson)) {
   # p.value matrix of edges
   mat_p <- p_community_cij_md_ras_pearson[[i]]
 
   # use position_vec2mat() to return the pairs of communities that distinguish two states
   # use upper.tri then small community goes first
-  mat_pairs <- position_vec2mat(which(mat_p[upper.tri(mat_p)]<0.05), 
+  mat_pairs <- position_vec2mat(which(mat_p[upper.tri(mat_p)]<p.cutoff), 
     dim=dim(mat_p)[1], method="upper")
 
   # extract all key residue pairs
@@ -72,7 +68,7 @@ for (i in 1:length(p_community_cij_md_ras_lmi)) {
 
   # use position_vec2mat() to return the pairs of communities that distinguish two states
   # use upper.tri then small community goes first
-  mat_pairs <- position_vec2mat(which(mat_p[upper.tri(mat_p)]<0.05),
+  mat_pairs <- position_vec2mat(which(mat_p[upper.tri(mat_p)]<p.cutoff),
     dim=dim(mat_p)[1], method="upper")
 
   # extract all key residue pairs
