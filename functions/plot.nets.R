@@ -1,40 +1,16 @@
-## date: 09/06/2015
+## date: 09/10/2015
+## This function plot a list of remodeled networks returned from remodel.cna()
 
-plot.nets <- function(cij, cmap, cutoff.cij, nets_dummy, membership, signif, layout_2d, p.cutoff) {
+plot.nets <- function(nets, layout_2d) {
+  layout(matrix(1:(2*length(nets)),nrow=2))
+  for(i in 1:length(nets)) {
+    w1 <- E(nets[[i]][[1]]$community.network)$weight
+    w2 <- E(nets[[i]][[2]]$community.network)$weight
 
-  # calculate consensus cij
-  cij1 <- filter.dccm(cij[[1]], cmap=cmap[[1]], cutoff.cij=cutoff.cij)
-  cij2 <- filter.dccm(cij[[2]], cmap=cmap[[2]], cutoff.cij=cutoff.cij)
-
-  # abs!
-  cij1 <- abs(cij1)
-  cij2 <- abs(cij2)
-
-  # minus.log cij
-  cij1[cij1>=1] <- 0.9999
-  cij1[cij1>0] <- -log(cij1[cij1>0])
-  cij2[cij2>=1] <- 0.9999
-  cij2[cij2>0] <- -log(cij2[cij2>0])
-
-  # change the cij of dummy networks
-  nets <- nets_dummy
-  nets[[1]]$cij <- cij1
-  nets[[2]]$cij <- cij2
-
-  # remodel networks
-  nets_remodel <- remodel.cna(nets, member=membership, method="sum",
-    col.edge="significance", scut=4, normalize=FALSE, signif=signif, p.cutoff=p.cutoff)
-
-  # calculate weights
-  w1 <- (E(nets_remodel[[1]]$community.network)$weight)*1
-  w2 <- (E(nets_remodel[[2]]$community.network)$weight)*1
-
-  # plot!
-  plot.cna(nets_remodel[[1]], layout=layout_2d, weights = w1,
-    vertex.label=NA, main=paste0(names(cij)[1],"_cutoff.cij=",cutoff.cij))
-  plot.cna(nets_remodel[[2]], layout=layout_2d, weights = w2,
-    vertex.label=NA, main=paste0(names(cij)[2],"_cutoff.cij=",cutoff.cij))
-
-  return(nets_remodel)
+    plot.cna(nets[[i]][[1]], layout=layout_2d, weights = w1, vertex.label=NA,
+      main=paste0(names(nets[[i]])[1],"_cutoff.cij=",names(nets)[i]))
+    plot.cna(nets[[i]][[2]], layout=layout_2d, weights = w2, vertex.label=NA,
+      main=paste0(names(nets[[i]])[2],"_cutoff.cij=",names(nets)[i]))
+  }
 }
 

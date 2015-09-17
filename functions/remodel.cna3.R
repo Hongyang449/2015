@@ -23,7 +23,7 @@ get.edgecolor <- function(cij, method, colmap, cutoff, n = 30, signif = NULL, p.
       }, 
       feature = {
          as.vector( apply(pcij, 2, function(x) {
-            if(all(x==0) || ((max(x) - min(x))/max(x)) < cutoff)
+            if(all(x==0) ||  min(x)/max(x) > cutoff)
                return(rep(0, length(x)))
             class <- suppressWarnings(classIntervals(x, n=2, style='equal'))
             flag <- as.integer(x >= class$brks[2])

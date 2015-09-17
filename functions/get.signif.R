@@ -2,7 +2,7 @@
 # input two sets of cij arrays, this function returns the t.test p-value of each edge
 # date: 09/04/2015
 
-get.signif <- function(cij1, cij2) {
+get.signif <- function(cij1, cij2, mu=0) {
   # mat_p restore the p.value of t.test of a certain community edge
   # diag value are NA (t.test error for identical values) 
   mat_p <- matrix(NA, nrow=dim(cij1)[1], ncol=dim(cij1)[2])
@@ -13,7 +13,12 @@ get.signif <- function(cij1, cij2) {
   mat_1 <- apply(cij1, 3, '[')
   mat_2 <- apply(cij2, 3, '[')
   for (i in which(!diag.ind(cij1[,,1]))) {
-    mat_p[i] <- t.test(mat_1[i,], mat_2[i,])$p.value
+    if (abs(mean(mat_1[i,]) - mean(mat_2[i,])) > mu) {
+      if (mean(mat_1[i,]) >= mean(mat_2[i,]))
+      mat_p[i] <- t.test(mat_1[i,], mat_2[i,], mu=mu)$p.value
+      else mat_p[i] <- t.test(mat_2[i,], mat_1[i,], mu=mu)$p.value
+    }
+    else mat_p[i] <- NaN
   }
   return( mat_p )
 }

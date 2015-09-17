@@ -2,7 +2,7 @@
 # input cij, cmap are lists!
 # date: 09/04/2015
 
-get.community.cij <- function(cij, cmap, cutoff.cij, membership) {
+get.community.cij <- function(cij, cmap, cutoff.cij, membership, cij.filter=NULL) {
 
   # find the dim of community.cij
   l <- length(unique(membership))
@@ -20,9 +20,12 @@ get.community.cij <- function(cij, cmap, cutoff.cij, membership) {
 
     # use the consensus cij (set values to 1) as the cmap/extra.filter
     community_cij <- array(0, dim=c(l,l,dim(cij[[j]])[3]))
-    cij_filter <- filter.dccm(cij[[j]], cmap=cmap[[j]], cutoff.cij=cutoff.cij)
-    cij_filter[cij_filter!=0] <- 1
-
+    if(is.null(cij.filter)) {
+      cij_filter <- filter.dccm(cij[[j]], cmap=cmap[[j]], cutoff.cij=cutoff.cij)
+      cij_filter[cij_filter!=0] <- 1
+    }
+    else cij_filter <- cij.filter
+    
     for (i in 1:dim(cij[[j]])[3]) {
 
       # filter cij; minus.log
