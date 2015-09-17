@@ -1,4 +1,4 @@
-## name: network_of_md_gt.r
+## name: network_of_md_feature_gt.r
 ## date: 09/03/2015
 
 ## Here I try to explore parameters(cutoff.cij) for Ras networks.
@@ -80,7 +80,7 @@ names(nets_md_gt_pearson_remodel) <- seq(0.3,0.7,by=0.1)
 
 
 save(nets_md_gt_pearson_remodel,
-     file="network_of_md_gt.RData")
+     file="network_of_md_feature_gt.RData")
 
 
 

@@ -82,6 +82,10 @@ save(community_cij_md_ras_pearson, community_cij_md_ras_lmi,
 
 
 # plot!
+library(bio3d)
+load("/Users/hyangl/Desktop/0730_ras_transducin/comparison/layout_2d.RData")
+load("/Users/hyangl/Desktop/2015/0730_ras_transducin/comparison/network_of_md_signif_ras.RData")
+source("/Users/hyangl/Desktop/2015/functions/plot.nets.R")
 
 plot.nets(nets_md_ras_pearson_remodel[as.character(seq(0.2,0.35,by=0.05))], layout_2d=layout_2d)
 mtext("Ras_MD_networks(pearson;signif)", line=-50, outer=TRUE, cex=1.5)
@@ -98,5 +102,13 @@ dev.copy2pdf(file="figures/cna_md_ras_lmi_signif_0.3_0.45.pdf")
 plot.nets(nets_md_ras_lmi_remodel[as.character(seq(0.5,0.65,by=0.05))], layout_2d=layout_2d)
 mtext("Ras_MD_networks(lmi;signif)", line=-50, outer=TRUE, cex=1.5)
 dev.copy2pdf(file="figures/cna_md_ras_lmi_signif_0.5_0.65.pdf")
+
+plot.nets(nets_md_ras_pearson_remodel[as.character(seq(0.3,0.6,by=0.1))], layout_2d=layout_2d)
+mtext("Ras_MD_networks(pearson;signif)", line=-50, outer=TRUE, cex=1.5)
+dev.copy2pdf(file="figures/cna_md_ras_pearson_signif_0.3_0.6.pdf")
+
+plot.nets(nets_md_ras_lmi_remodel[as.character(seq(0.3,0.6,by=0.1))], layout_2d=layout_2d)
+mtext("Ras_MD_networks(lmi;signif)", line=-50, outer=TRUE, cex=1.5)
+dev.copy2pdf(file="figures/cna_md_ras_lmi_signif_0.3_0.6.pdf")
 
   

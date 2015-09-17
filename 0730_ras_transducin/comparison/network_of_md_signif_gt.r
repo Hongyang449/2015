@@ -59,10 +59,18 @@ save(community_cij_md_gt_pearson,
 
 # plot!
 
+library(bio3d)
+load("/Users/hyangl/Desktop/0730_ras_transducin/comparison/layout_2d.RData")
+load("/Users/hyangl/Desktop/2015/0730_ras_transducin/comparison/network_of_md_signif_gt.RData")
+source("/Users/hyangl/Desktop/2015/functions/plot.nets.R")
+
 plot.nets(nets_md_gt_pearson_remodel[as.character(seq(0.4,0.6,by=0.05))], layout_2d=layout_2d)
 mtext("Gt_MD_networks(pearson;signif)", line=-50, outer=TRUE, cex=1.5)
 dev.copy2pdf(file="figures/cna_md_gt_pearson_signif_0.4_0.6.pdf")
 
+plot.nets(nets_md_gt_pearson_remodel[as.character(seq(0.4,0.7,by=0.1))], layout_2d=layout_2d)
+mtext("Transducin_MD_networks(pearson;signif)", line=-50, outer=TRUE, cex=1.5)
+dev.copy2pdf(file="figures/cna_md_gt_pearson_signif_0.4_0.7.pdf")
 
 
   

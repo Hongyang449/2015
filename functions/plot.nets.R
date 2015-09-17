@@ -2,6 +2,7 @@
 ## This function plot a list of remodeled networks returned from remodel.cna()
 
 plot.nets <- function(nets, layout_2d) {
+  require(igraph)
   layout(matrix(1:(2*length(nets)),nrow=2))
   for(i in 1:length(nets)) {
     w1 <- E(nets[[i]][[1]]$community.network)$weight

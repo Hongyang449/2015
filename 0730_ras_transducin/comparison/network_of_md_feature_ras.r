@@ -1,4 +1,4 @@
-## name: network_of_md_ras.r
+## name: network_of_md_feature_ras.r
 ## date: 09/01/2015
 
 ## Here I try to explore parameters(cutoff.cij) for Ras networks.
@@ -132,7 +132,84 @@ names(nets_md_ras_lmi_remodel) <- seq(0.0,0.6,by=0.1)
 
 save(nets_md_ras_pearson_remodel,
      nets_md_ras_lmi_remodel,
-     file="network_of_md_ras.RData")
+     file="network_of_md_feature_ras.RData")
+
+# plot:
+library(bio3d)
+library(igraph)
+load("/Users/hyangl/Desktop/2015/0730_ras_transducin/comparison/layout_2d.RData")
+load("/Users/hyangl/Desktop/2015/0730_ras_transducin/comparison/network_of_md_feature_ras.RData")
+load("/Users/hyangl/Desktop/2015/0730_ras_transducin/comparison/network_of_md_feature_gt.RData")
+
+cutoff <- seq(0.0,0.6,by=0.1)
+i = 6
+layout(matrix(1:2,nrow=1))
+w1_pearson = (E(nets_md_ras_pearson_remodel[[i]][[1]]$community.network)$weight)*1
+w2_pearson = (E(nets_md_ras_pearson_remodel[[i]][[2]]$community.network)$weight)*1
+plot.cna(nets_md_ras_pearson_remodel[[i]][[1]], layout=layout_2d[1:9,], weights = w1_pearson,
+  vertex.label=NA, main=paste0("gtp_cutoff.cij=",cutoff[[i]]))
+plot.cna(nets_md_ras_pearson_remodel[[i]][[2]], layout=layout_2d[1:9,], weights = w2_pearson,
+  vertex.label=NA, main=paste0("gdp_cutoff.cij=",cutoff[[i]]))
+mtext("Ras_MD_networks(pearson)", line=-5, outer=TRUE, cex=1.5)
+dev.copy2pdf(file="figures/cna_md_ras_pearson_feature_0.5.pdf")
+
+cutoff <- seq(0.3,0.7,by=0.1)
+i = 4
+layout(matrix(1:2,nrow=1))
+w1_pearson = (E(nets_md_gt_pearson_remodel[[i]][[1]]$community.network)$weight)*1
+w2_pearson = (E(nets_md_gt_pearson_remodel[[i]][[2]]$community.network)$weight)*1
+plot.cna(nets_md_gt_pearson_remodel[[i]][[1]], layout=layout_2d, weights = w1_pearson,
+  vertex.label=NA, main=paste0("gtp_cutoff.cij=",cutoff[[i]]))
+plot.cna(nets_md_gt_pearson_remodel[[i]][[2]], layout=layout_2d, weights = w2_pearson,
+  vertex.label=NA, main=paste0("gdp_cutoff.cij=",cutoff[[i]]))
+mtext("Transducin_MD_networks(pearson)", line=-5, outer=TRUE, cex=1.5)
+dev.copy2pdf(file="figures/cna_md_gt_pearson_feature_0.6.pdf")
+
+layout(matrix(1:8,nrow=2))
+for (i in 4:7) {
+  w1_pearson = (E(nets_md_ras_pearson_remodel[[i]][[1]]$community.network)$weight)*1
+  w2_pearson = (E(nets_md_ras_pearson_remodel[[i]][[2]]$community.network)$weight)*1
+  plot.cna(nets_md_ras_pearson_remodel[[i]][[1]], layout=layout_2d[1:9,], weights = w1_pearson,
+    vertex.label=NA, main=paste0("gtp_cutoff.cij=",cutoff[[i]]))
+  plot.cna(nets_md_ras_pearson_remodel[[i]][[2]], layout=layout_2d[1:9,], weights = w2_pearson,
+    vertex.label=NA, main=paste0("gdp_cutoff.cij=",cutoff[[i]]))
+}
+mtext("Ras_MD_networks(pearson)", line=-50, outer=TRUE, cex=1.5)
+dev.copy2pdf(file="figures/cna_md_ras_pearson_feature_0.3_0.6.pdf")
+
+layout(matrix(1:8,nrow=2))
+for (i in 4:7) {
+  w1_lmi = (E(nets_md_ras_lmi_remodel[[i]][[1]]$community.network)$weight)*1
+  w2_lmi = (E(nets_md_ras_lmi_remodel[[i]][[2]]$community.network)$weight)*1
+  plot.cna(nets_md_ras_lmi_remodel[[i]][[1]], layout=layout_2d[1:9,], weights = w1_lmi,
+    vertex.label=NA, main=paste0("gtp_cutoff.cij=",cutoff[[i]]))
+  plot.cna(nets_md_ras_lmi_remodel[[i]][[2]], layout=layout_2d[1:9,], weights = w2_lmi,
+    vertex.label=NA, main=paste0("gdp_cutoff.cij=",cutoff[[i]]))
+}
+mtext("Ras_MD_networks(lmi)", line=-50, outer=TRUE, cex=1.5)
+dev.copy2pdf(file="figures/cna_md_ras_lmi_feature_0.3_0.6.pdf")
+
+cutoff <- seq(0.3,0.7,by=0.1)
+layout(matrix(1:8,nrow=2))
+for (i in 2:5) {
+  w1_pearson = (E(nets_md_gt_pearson_remodel[[i]][[1]]$community.network)$weight)*1
+  w2_pearson = (E(nets_md_gt_pearson_remodel[[i]][[2]]$community.network)$weight)*1
+  plot.cna(nets_md_gt_pearson_remodel[[i]][[1]], layout=layout_2d, weights = w1_pearson,
+    vertex.label=NA, main=paste0("gtp_cutoff.cij=",cutoff[[i]]))
+  plot.cna(nets_md_gt_pearson_remodel[[i]][[2]], layout=layout_2d, weights = w2_pearson,
+    vertex.label=NA, main=paste0("gdp_cutoff.cij=",cutoff[[i]]))
+}
+mtext("Transducin_MD_networks(pearson)", line=-50, outer=TRUE, cex=1.5)
+dev.copy2pdf(file="figures/cna_md_gt_pearson_feature_0.4_0.7.pdf")
+
+
+
+
+
+
+
+
+
 
 
 
