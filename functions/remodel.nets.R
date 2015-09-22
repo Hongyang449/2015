@@ -1,10 +1,10 @@
 ## date: 09/06/2015
 
-remodel.nets <- function(cij, cmap, cutoff.cij, nets_dummy, membership, signif, layout_2d, p.cutoff) {
+remodel.nets <- function(cij, cmap, cutoff.cij=0, extra.filter=NULL, nets_dummy, membership, signif, p.cutoff) {
 
   # calculate consensus cij
-  cij1 <- filter.dccm(cij[[1]], cmap=cmap[[1]], cutoff.cij=cutoff.cij)
-  cij2 <- filter.dccm(cij[[2]], cmap=cmap[[2]], cutoff.cij=cutoff.cij)
+  cij1 <- filter.dccm(cij[[1]], cmap=cmap[[1]], cutoff.cij=cutoff.cij, extra.filter=extra.filter)
+  cij2 <- filter.dccm(cij[[2]], cmap=cmap[[2]], cutoff.cij=cutoff.cij, extra.filter=extra.filter)
 
   # abs!
   cij1 <- abs(cij1)
