@@ -10,22 +10,7 @@ load("/Users/hyangl/Desktop/0730_ras_transducin/transducin/md.cmap.RData")
 load("/Users/hyangl/Desktop/0730_ras_transducin/comparison/ali.RData")
 
 source("/Users/hyangl/Desktop/2015/functions/get.unique.key.R")
-
-load("/Users/hyangl/Desktop/2015/0730_ras_transducin/comparison/network_of_md_signif_ras.RData")
-
-# add the "sse" colored by community colors
-add.sse <- function(ylim,membership) {
-  for (i in na.omit(unique(membership))) {
-    pos <- bounds(which(membership == i))
-
-    bo <- max(ylim) + (diff(ylim) * 0.001)
-    to <- max(ylim) + (diff(ylim) * 0.04)
-    rect(xleft=pos[,"start"], xright=pos[,"end"], ybottom=bo, ytop=to, col=vmd.colors()[i])
-    bo <- min(ylim) - (diff(ylim) * 0.001)
-    to <- min(ylim) - (diff(ylim) * 0.04)
-    rect(xleft=pos[,"start"], xright=pos[,"end"], ybottom=bo, ytop=to, col=vmd.colors()[i])
-  }
-}
+source("/Users/hyangl/Desktop/2015/functions/add.community.rect.R")
 
 membership_ras <- as.numeric(ali["membership_ras",ali["membership_ras",]!="0"])
 membership_gt <- as.numeric(ali["membership_gt",ali["membership_gt",]!="0"])
@@ -99,7 +84,7 @@ for (i in 2) {
     pos=3, col="red", cex=0.7)
   text(x=which(x["gdp",]>=4), y=-x["gdp",which(x["gdp",]>=4)], labels=names(which(x["gdp",]>=4)),
     pos=1, col="green", cex=0.7)
-  add.sse(ylim, membership_ras)
+  add.community.rect(ylim, membership_ras)
   legend("topright", legend=c("GTP","GDP"), col=c("red","green"), pch="|", cex=1)
 
   dev.copy2pdf(file=paste0("figures/num_unique_edges_ras_all_pearson_",cutoff[i],".pdf"))
@@ -116,7 +101,7 @@ for (i in 2) {
     pos=3, col="red", cex=0.7)
   text(x=which(x["gdp",]>=4), y=-x["gdp",which(x["gdp",]>=4)], labels=names(which(x["gdp",]>=4)),
     pos=1, col="green", cex=0.7)
-  add.sse(ylim, membership_ras)
+  add.community.rect(ylim, membership_ras)
   legend("topright", legend=c("GTP","GDP"), col=c("red","green"), pch="|", cex=1)
 
   dev.copy2pdf(file=paste0("figures/num_unique_edges_ras_inter_pearson_",cutoff[i],".pdf"))
@@ -133,7 +118,7 @@ for (i in 2) {
     pos=3, col="red", cex=0.7)
   text(x=which(x["gdp",]>=4), y=-x["gdp",which(x["gdp",]>=4)], labels=names(which(x["gdp",]>=4)),
     pos=1, col="green", cex=0.7)
-  add.sse(ylim, membership_ras)
+  add.community.rect(ylim, membership_ras)
   legend("topright", legend=c("GTP","GDP"), col=c("red","green"), pch="|", cex=1)
 
   dev.copy2pdf(file=paste0("figures/num_unique_edges_ras_intra_pearson_",cutoff[i],".pdf"))
@@ -157,7 +142,7 @@ for (i in 3) {
     pos=3, col="red", cex=0.7)
   text(x=y[which(x["gdp",]>=3)], y=-x["gdp",which(x["gdp",]>=3)], labels=names(which(x["gdp",]>=3)),
     pos=1, col="green", cex=0.7)
-  add.sse(ylim, membership_gt_339)
+  add.community.rect(ylim, membership_gt_339)
   legend("topright", legend=c("GTP","GDP"), col=c("red","green"), pch="|", cex=1)
 
   dev.copy2pdf(file=paste0("figures/num_unique_edges_gt_all_pearson_",cutoff[i],".pdf"))
@@ -176,7 +161,7 @@ for (i in 3) {
     pos=3, col="red", cex=0.7)
   text(x=y[which(x["gdp",]>=3)], y=-x["gdp",which(x["gdp",]>=3)], labels=names(which(x["gdp",]>=3)),
     pos=1, col="green", cex=0.7)
-  add.sse(ylim, membership_gt_339)
+  add.community.rect(ylim, membership_gt_339)
   legend("topright", legend=c("GTP","GDP"), col=c("red","green"), pch="|", cex=1)
 
   dev.copy2pdf(file=paste0("figures/num_unique_edges_gt_inter_pearson_",cutoff[i],".pdf"))
@@ -195,7 +180,7 @@ for (i in 3) {
     pos=3, col="red", cex=0.7)
   text(x=y[which(x["gdp",]>=3)], y=-x["gdp",which(x["gdp",]>=3)], labels=names(which(x["gdp",]>=3)),
     pos=1, col="green", cex=0.7)
-  add.sse(ylim, membership_gt_339)
+  add.community.rect(ylim, membership_gt_339)
   legend("topright", legend=c("GTP","GDP"), col=c("red","green"), pch="|", cex=1)
 
   dev.copy2pdf(file=paste0("figures/num_unique_edges_gt_intra_pearson_",cutoff[i],".pdf"))

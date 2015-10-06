@@ -116,14 +116,14 @@ nets_ttest_gt_pearson_remodel <- lapply(as.list(1:length(cutoff)), function(x) {
   })
 names(nets_ttest_gt_pearson_remodel) <- cutoff
 
-save(community_cij_ttest_ras_pearson, community_cij_ttest_ras_lmi,
-     p_community_cij_ttest_ras_pearson, p_community_cij_ttest_ras_lmi,
-     nets_ttest_ras_pearson_remodel, nets_ttest_ras_lmi_remodel,
+save(community_cij_ttest_ras_pearson, community_cij_ttest_ras_lmi, community_cij_ttest_gt_pearson,
+     p_community_cij_ttest_ras_pearson, p_community_cij_ttest_ras_lmi, p_community_cij_ttest_gt_pearson,
+     nets_ttest_ras_pearson_remodel, nets_ttest_ras_lmi_remodel, nets_ttest_gt_pearson_remodel,
      file="network_of_ttest_cij.RData")
 
 # plot!
 library(bio3d)
-load("/Users/hyangl/Desktop/0730_ras_transducin/comparison/layout_2d.RData")
+load("/Users/hyangl/Desktop/2015/0730_ras_transducin/comparison/layout_2d.RData")
 load("/Users/hyangl/Desktop/2015/0730_ras_transducin/comparison/network_of_ttest_cij.RData")
 source("/Users/hyangl/Desktop/2015/functions/plot.nets.R")
 cutoff <- c(0.05,0.01,0.005)
@@ -140,4 +140,23 @@ plot.nets(nets_ttest_gt_pearson_remodel[as.character(cutoff)], layout_2d=layout_
 mtext("Gt_ttest_networks(pearson;signif)", line=-50, outer=TRUE, cex=1.5)
 dev.copy2pdf(file="figures/gt_ttest_pearson_signif.pdf")
 
+require(igraph)
+layout(matrix(1:2, ncol=2))
+nets <- nets_ttest_ras_pearson_remodel[["0.01"]]
+w1 <- (E(nets[[1]]$community.network)$weight) 
+w2 <- (E(nets[[2]]$community.network)$weight) 
+plot.cna(nets[[1]], layout=layout_2d[1:9,], weights = w1, vertex.label=NA, main="gtp")
+plot.cna(nets[[2]], layout=layout_2d[1:9,], weights = w2, vertex.label=NA, main="gdp")
+mtext("Ras_ttest_networks(pearson;signif;p.cutoff=0.01)", line=-3, outer=TRUE, cex=1.5)
+dev.copy2pdf(file="figures/ras_ttest_pearson_signif_0.01.pdf")
+
+require(igraph)
+layout(matrix(1:2, ncol=2))
+nets <- nets_ttest_gt_pearson_remodel[["0.01"]]
+w1 <- (E(nets[[1]]$community.network)$weight) 
+w2 <- (E(nets[[2]]$community.network)$weight) 
+plot.cna(nets[[1]], layout=layout_2d, weights = w1, vertex.label=NA, main="gtp")
+plot.cna(nets[[2]], layout=layout_2d, weights = w2, vertex.label=NA, main="gdp")
+mtext("Gt_ttest_networks(pearson;signif;p.cutoff=0.01)", line=-3, outer=TRUE, cex=1.5)
+dev.copy2pdf(file="figures/gt_ttest_pearson_signif_0.01.pdf")
 

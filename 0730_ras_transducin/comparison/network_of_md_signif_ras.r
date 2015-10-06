@@ -83,9 +83,10 @@ save(community_cij_md_ras_pearson, community_cij_md_ras_lmi,
 
 # plot!
 library(bio3d)
-load("/Users/hyangl/Desktop/0730_ras_transducin/comparison/layout_2d.RData")
+load("/Users/hyangl/Desktop/2015/0730_ras_transducin/comparison/layout_2d.RData")
 load("/Users/hyangl/Desktop/2015/0730_ras_transducin/comparison/network_of_md_signif_ras.RData")
 source("/Users/hyangl/Desktop/2015/functions/plot.nets.R")
+layout_2d <- layout_2d[1:9,]
 
 plot.nets(nets_md_ras_pearson_remodel[as.character(seq(0.2,0.35,by=0.05))], layout_2d=layout_2d)
 mtext("Ras_MD_networks(pearson;signif)", line=-50, outer=TRUE, cex=1.5)
@@ -111,4 +112,24 @@ plot.nets(nets_md_ras_lmi_remodel[as.character(seq(0.3,0.6,by=0.1))], layout_2d=
 mtext("Ras_MD_networks(lmi;signif)", line=-50, outer=TRUE, cex=1.5)
 dev.copy2pdf(file="figures/cna_md_ras_lmi_signif_0.3_0.6.pdf")
 
-  
+# raw plot - no cutoff
+require(igraph)
+layout(matrix(1:2, nrow=1))
+width = 0.2
+w1 <- (E(nets_md_ras_pearson_remodel[[1]][[1]]$community.network)$weight) * width
+w2 <- (E(nets_md_ras_pearson_remodel[[1]][[2]]$community.network)$weight) * width
+plot.cna(nets_md_ras_pearson_remodel[[1]][[1]], layout=layout_2d, weights = w1, 
+  vertex.label=NA, main="gtp_cutoff.cij=0")
+plot.cna(nets_md_ras_pearson_remodel[[1]][[2]], layout=layout_2d, weights = w1,
+  vertex.label=NA, main="gdp_cutoff.cij=0")
+mtext("Ras_MD_networks(pearson;signif)", line=-3, outer=TRUE, cex=1.5)
+dev.copy2pdf(file="figures/cna_md_ras_pearson_signif_0.pdf")
+
+
+
+
+
+
+
+
+
